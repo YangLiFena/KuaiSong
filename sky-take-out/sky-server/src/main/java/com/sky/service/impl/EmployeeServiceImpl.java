@@ -114,4 +114,25 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         return new PageResult(total, records);
     }
+
+    /**
+     * 启用禁用员工账号
+     * @param status
+     * @param id
+     */
+    public void startOrStop(Integer status, Long id) {
+        // TODO 修改员工表的status字段
+        // update employee set status = ? where id = ? // 在持久层mapper中编写，推荐写成动态的（可以根据参数修改不同的字段）
+        /* 方法1，传统方法
+        Employee employee = new Employee(); // 创建对象并传入
+        employee.setStatus(status);
+        employee.setId(id);*/
+        // 方法2, 使用构建器 即@builder注解
+        Employee employee = Employee.builder()
+                        .status(status)
+                        .id(id)
+                        .build();
+
+        employeeMapper.update(employee); //传实体类达到传不同字段的目的
+    }
 }

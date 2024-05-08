@@ -37,4 +37,10 @@ public interface EmployeeMapper {
      */
     // TODO sql语句看不懂Mapper.xml里（需要学mybatis）
     Page<Employee> pageQuery(EmployeePageQueryDTO employeePageQueryDTO);
+
+    /**
+     * 根据主键动态修改属性值，动态sql--不通过注解方式写，在mapper映射文件里写
+     * @param employee
+     */
+    void update(Employee employee);
 }

@@ -93,4 +93,13 @@ public class EmployeeController {
         PageResult pageResult = employeeService.pageQuery(employeePageQueryDTO);
         return  Result.success(pageResult);
     }
+
+
+    @PostMapping("/status/{status}")
+    @ApiOperation("启用禁用员工账号")
+    public Result startOrStop(@PathVariable Integer status, Long id){// 路径参数需要使用注解@PathVariable修饰
+        log.info("启用禁用员工账号：{}，{}", status, id);
+        employeeService.startOrStop(status,id);
+        return Result.success();
+    } // 这里的Result没有用泛型，因为不需要data数据？？
 }
