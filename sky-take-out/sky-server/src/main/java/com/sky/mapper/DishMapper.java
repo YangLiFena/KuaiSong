@@ -65,4 +65,28 @@ public interface DishMapper {
      */
     @AutoFill(value = OperationType.UPDATE)
     void update(Dish dish);
+
+
+    /**
+     * 根据类别id查询菜品列表
+     * @param dish
+     * @return
+     */
+    List<Dish> list(Dish dish);
+
+    /**
+     * 根据套餐id获取相关菜品
+     * @param id
+     * @return
+     */
+    @Select("select a.* from dish a left join setmeal_dish b on a.id = b.dish_id where b.setmeal_id = #{setmealId}")
+    List<Dish> getBySetmealId(Long id);
+
+    /**
+     * 计算当前菜品关联的套餐
+     * @param id
+     * @return
+     */
+    @Select("select count(id) from setmeal_dish where dish_id = #{id}")
+    Long CountByDishId(Long id);
 }

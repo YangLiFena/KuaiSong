@@ -6,15 +6,20 @@ import com.sky.constant.MessageConstant;
 import com.sky.constant.StatusConstant;
 import com.sky.dto.DishDTO;
 import com.sky.dto.DishPageQueryDTO;
+import com.sky.dto.SetmealPageQueryDTO;
 import com.sky.entity.Dish;
 import com.sky.entity.DishFlavor;
+import com.sky.entity.Setmeal;
 import com.sky.exception.DeletionNotAllowedException;
+import com.sky.exception.SetmealEnableFailedException;
 import com.sky.mapper.DishFlavorMapper;
 import com.sky.mapper.DishMapper;
 import com.sky.mapper.SetmealDishMapper;
 import com.sky.result.PageResult;
+import com.sky.result.Result;
 import com.sky.service.DishService;
 import com.sky.vo.DishVO;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -141,5 +146,45 @@ public class DishServiceImpl implements DishService {
             dishFlavorMapper.insertBatch(flavors);
         }
 
+    }
+
+    /**
+     * 根据类别id查询菜品列表
+     * @param categoryId
+     * @return
+     */
+    public List<Dish> list(Long categoryId) {
+        Dish dish = Dish.builder()
+                .categoryId(categoryId)
+                .status(StatusConstant.ENABLE) // 默认为停售状态
+                .build();
+        return dishMapper.list(dish);
+    }
+
+    /**
+     * 起售或停售菜品
+     * @param status
+     * @param id
+     */
+    public void startOrStop(Integer status, Long id) {
+        // TODO 修改套菜品的status字段
+        //停售菜品时，判断是否有套餐包含该菜品，否则无法停售"
+        if(status == StatusConstant.DISABLE){
+            // 根据id查询菜品数据
+            Dish dish = dishMapper.getById(id);
+            // 根据菜品id查询dishID
+            Long dishId = dish.getId();
+            Long num = dishMapper.CountByDishId(dishId);
+            if(num != 0){
+                throw new SetmealEnableFailedException(MessageConstant.DISH_BE_RELATED_BY_SETMEAL);
+            }
+        }
+        // 使用构建器 即@builder注解
+        Dish dish = Dish.builder()
+                .status(status)
+                .id(id)
+                .build();
+
+        dishMapper.update(dish); //传实体类达到传不同字段的目的
     }
 }
