@@ -44,7 +44,7 @@ public class HttpClientUtil {
             URIBuilder builder = new URIBuilder(url);
             if(paramMap != null){
                 for (String key : paramMap.keySet()) {
-                    builder.addParameter(key,paramMap.get(key));
+                    builder.addParameter(key,paramMap.get(key)); // 构造请求参数
                 }
             }
             URI uri = builder.build();
