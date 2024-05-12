@@ -11,9 +11,11 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * 菜品管理
@@ -25,6 +27,8 @@ import java.util.List;
 public class DishController {
     @Autowired
     private DishService dishService; // @Autowired注解：注入service
+    @Autowired
+    private RedisTemplate redisTemplate;
     /**
      * 新增菜品
      * @param dishDTO
@@ -35,6 +39,10 @@ public class DishController {
     public Result<String> save(@RequestBody DishDTO dishDTO){ //提供的Controller方法用于处理请求 // RequestBody 封装json格式的数据
         log.info("新增菜品：{}", dishDTO);
         dishService.saveWithFlavor(dishDTO); // 调用业务层操作数据库，即将真正操作数据库的代码封装到service层
+        // 清理缓存数据
+        String key = "dish_" + dishDTO.getCategoryId();
+        cleanCache(key);
+
         return Result.success();
     }
 
@@ -62,6 +70,9 @@ public class DishController {
         log.info("菜品批量删除:{}", ids);
         // 调用业务层实现
         dishService.deleteBatch(ids);
+        // 清理所有菜品缓存数据
+        cleanCache("dish_*");
+
         return Result.success();
     }
 
@@ -89,6 +100,8 @@ public class DishController {
         log.info("修改菜品：{}", dishDTO);
         // 具体的修改在service中实现
         dishService.updateWithFlavor(dishDTO);
+        // 清理所有菜品缓存数据
+        cleanCache("dish_*");
         return Result.success();
     }
 
@@ -115,6 +128,14 @@ public class DishController {
     public Result startOrStop(@PathVariable Integer status, Long id){// 路径参数需要使用注解@PathVariable修饰
         log.info("起售、停售菜品：{}，{}", status, id);
         dishService.startOrStop(status,id);
+        // 清理所有菜品缓存数据
+        cleanCache("dish_*");
         return Result.success();
     } // 这里的Result没有用泛型，因为不需要data数据？？
+
+
+    private void cleanCache(String pattern){
+        Set keys = redisTemplate.keys(pattern);
+        redisTemplate.delete(keys);
+    }
 }
