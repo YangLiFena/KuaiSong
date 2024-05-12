@@ -168,10 +168,12 @@ public class SetmealServiceImpl implements SetmealService {
         }
         // 使用构建器 即@builder注解
         Setmeal setmeal = Setmeal.builder()
-                .status(status)
                 .id(id)
+                .status(status)
                 .build();
 
+        System.out.println("停售的套餐：");
+        System.out.println(setmeal.getId());
         setmealMapper.update(setmeal); //传实体类达到传不同字段的目的
     }
 
