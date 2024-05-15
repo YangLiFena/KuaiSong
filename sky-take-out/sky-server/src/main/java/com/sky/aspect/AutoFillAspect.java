@@ -19,20 +19,25 @@ import java.time.LocalDateTime;
  * 自定义切面，实现功能字段自动填充处理
  */
 @Aspect
-@Component
+@Component // @Component 用于标识一个类为 Spring 组件，将其纳入 Spring IoC 容器中管理
 @Slf4j //便于记录日志
 public class AutoFillAspect {
+    // AOP是基于动态代理的
+    // 动态代理：运行期间，对象中方法的动态拦截，在拦截方法的前后执行功能操作
+    // 有了动态代理的技术，那么就可以在不修改方法源码的情况下，增强被代理对象的方法的功能，在方法执行前后做任何你想做的事情
     /**
-     * 切入点
+     * 设置切入点
      */
     @Pointcut("execution(* com.sky.mapper.*.*(..)) && @annotation(com.sky.annotation.AutoFill)") // 处理mapper包下的加入了AutoFill注解的方法
     public void autoFillPointCut(){}
 
     /**
-     * 使用前置通知（前置、后置、环绕）,在通知中对公共字段进行赋值
+     * “通知”也称为"增强"
+     * 使用前置通知（5中环绕方式：前置通知、后置通知、环绕通知、返回通知、异常通知）,在通知中对公共字段进行赋值
      */
     @Before("autoFillPointCut()")
     public void autoFill(JoinPoint joinPoint){
+        // JoinPoint连接点
         log.info("开始进行公共字段自动填充");
         // 获取到当前被拦截的方法上的数据库操作类型
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();

@@ -25,7 +25,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.function.ToDoubleBiFunction;
 
-@Service
+@Service //  @Service通常作为 @Component 的特例，用于标识一个类为业务层服务组件
 public class EmployeeServiceImpl implements EmployeeService {
 
     @Autowired

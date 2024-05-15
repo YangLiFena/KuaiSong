@@ -22,11 +22,14 @@ import java.util.Map;
 /**
  * 员工管理
  */
-@RestController
+@RestController // @Controller 和 @RequestBody(返回字符串或json)
 @RequestMapping("/admin/employee")
 @Slf4j
 public class EmployeeController {
 
+    // TODO @Autowired注解
+    // @Autowired可以标注在属性上、方法上和构造器上，来完成自动装配；当标注的属性是接口时，其实注入的是这个接口的实现类
+    // @Autowired用于自动装配（注入） Spring 容器中的 Bean，通过类型匹配进行注入
     @Autowired
     private EmployeeService employeeService;
     @Autowired
@@ -67,7 +70,7 @@ public class EmployeeController {
      *
      * @return
      */
-    @PostMapping("/logout")
+    @PostMapping("/logout") // 处理HTTP的Post请求，将其映射到/logout路径上的处理方法，当有人发送一个 POST 请求到 /logout 路径时，Spring 将会调用被注解的方法来处理该请求。
     public Result<String> logout() {
         return Result.success();
     }

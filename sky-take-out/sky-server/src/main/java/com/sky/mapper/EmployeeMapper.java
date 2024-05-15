@@ -43,6 +43,7 @@ public interface EmployeeMapper {
 
     /**
      * 根据主键动态修改属性值，动态sql--不通过注解方式写，在mapper映射文件里写
+     * JavaBean传参法
      * @param employee
      */
     @AutoFill(value = OperationType.UPDATE)

@@ -5,6 +5,7 @@
     <!--
         useGeneratedKeys:true 表示获取刚插入数据库的记录生成的主键值
         keyProperty="id" 表示将主键值赋给id属性
+        完成回填主键
     -->
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
         insert into dish (status, name, category_id, price, image, description, create_time, update_time, create_user,
